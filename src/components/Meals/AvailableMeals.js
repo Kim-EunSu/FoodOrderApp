@@ -5,6 +5,7 @@ import classes from "./AvailableMeals.module.css";
 
 const AvailableMeals = () => {
   const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMeals = async () => {
@@ -13,18 +14,18 @@ const AvailableMeals = () => {
       );
       const responseData = await response.json();
 
-      const loadMeals = [];
+      const loadedMeals = [];
 
       for (const key in responseData) {
-        loadMeals.push({
+        loadedMeals.push({
           id: key,
           name: responseData[key].name,
           description: responseData[key].description,
           price: responseData[key].price,
         });
-
-        setMeals(loadMeals);
       }
+      setMeals(loadedMeals);
+      setIsLoading(false);
     };
     fetchMeals();
   }, []);
@@ -38,6 +39,14 @@ const AvailableMeals = () => {
       price={meal.price}
     />
   ));
+
+  if (isLoading) {
+    return (
+      <section className={classes.MealsLoading}>
+        <p>...Loading</p>
+      </section>
+    );
+  }
 
   return (
     <section className={classes.meals}>
